@@ -52,11 +52,15 @@ class AuthController extends Controller
 
     protected function respondWithToken($token, $user)
     {
+        $username = optional($user->pengurus)->username;
+        $ttlMinutes = (int) config('jwt.ttl', 180);
         return response()->json([
+            'message' => 'Login success',
             'access_token' => $token,
             'token_type' => 'bearer',
-            'expires_in' => auth()->factory()->getTTL() * 60,
-            'user' => $user
+            'expires_in' => $ttlMinutes * 60,
+            'username' => $username,
+            'user' => $user,
         ]);
     }
 }
