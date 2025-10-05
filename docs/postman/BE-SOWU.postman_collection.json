@@ -1,0 +1,217 @@
+{
+  "info": {
+    "_postman_id": "b4e7b1f4-0f4a-4c48-9f22-123456789abc",
+    "name": "BE-SOWU API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Koleksi endpoint BE-SOWU (JWT pengurus + CRUD Users/Activity/Vismis). Set environment var base_url dan token."
+  },
+  "item": [
+    {
+      "name": "Auth - Login (Pengurus)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {"key": "Accept", "value": "application/json"},
+          {"key": "Content-Type", "value": "application/json"}
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"username\": \"PENGURUS_USERNAME_OR_EMAIL_OR_NIM\",\n  \"password\": \"secret123\"\n}"
+        },
+        "url": {"raw": "{{base_url}}/api/auth/login", "host": ["{{base_url}}"], "path": ["api","auth","login"]}
+      },
+      "response": [],
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "let json = pm.response.json();",
+              "if(json.access_token){ pm.environment.set('token', json.access_token); }"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Auth - Refresh Token",
+      "request": {
+        "method": "POST",
+        "header": [
+          {"key": "Accept", "value": "application/json"},
+          {"key": "Authorization", "value": "Bearer {{token}}"}
+        ],
+        "url": {"raw": "{{base_url}}/api/auth/refresh", "host": ["{{base_url}}"], "path": ["api","auth","refresh"]}
+      },
+      "response": []
+    },
+    {
+      "name": "Auth - Logout",
+      "request": {
+        "method": "POST",
+        "header": [
+          {"key": "Accept", "value": "application/json"},
+          {"key": "Authorization", "value": "Bearer {{token}}"}
+        ],
+        "url": {"raw": "{{base_url}}/api/auth/logout", "host": ["{{base_url}}"], "path": ["api","auth","logout"]}
+      },
+      "response": []
+    },
+    {
+      "name": "User - List",
+      "request": {"method": "GET","header": [{"key": "Accept","value": "application/json"}],"url": {"raw": "{{base_url}}/api/user","host": ["{{base_url}}"],"path": ["api","user"]}},
+      "response": []
+    },
+    {
+      "name": "User - Detail",
+      "request": {"method": "GET","header": [{"key": "Accept","value": "application/json"}],"url": {"raw": "{{base_url}}/api/user/1","host": ["{{base_url}}"],"path": ["api","user","1"]}},
+      "response": []
+    },
+    {
+      "name": "User - Join (New Member)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {"key": "Accept", "value": "application/json"}
+        ],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {"key": "nama_lengkap", "value": "Budi Santoso", "type": "text"},
+            {"key": "nim", "value": "2312345", "type": "text"},
+            {"key": "gender", "value": "male", "type": "text"},
+            {"key": "angkatan", "value": "2025", "type": "text"},
+            {"key": "alasan", "value": "Ingin belajar vokal", "type": "text"},
+            {"key": "profile_photo", "type": "file", "src": ""}
+          ]
+        },
+        "url": {"raw": "{{base_url}}/api/user/join", "host": ["{{base_url}}"], "path": ["api","user","join"]}
+      },
+      "response": []
+    },
+    {
+      "name": "User - Create (Pengurus)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {"key": "Accept", "value": "application/json"},
+          {"key": "Authorization", "value": "Bearer {{token}}"}
+        ],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {"key": "nama_lengkap", "value": "Admin Pengurus", "type": "text"},
+            {"key": "nim", "value": "2211111", "type": "text"},
+            {"key": "role", "value": "pengurus", "type": "text"},
+            {"key": "status", "value": "aktif", "type": "text"},
+            {"key": "password", "value": "secret123", "type": "text"},
+            {"key": "profile_photo", "type": "file", "src": ""}
+          ]
+        },
+        "url": {"raw": "{{base_url}}/api/user", "host": ["{{base_url}}"], "path": ["api","user"]}
+      },
+      "response": []
+    },
+    {
+      "name": "User - Update",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {"key": "Accept", "value": "application/json"},
+          {"key": "Authorization", "value": "Bearer {{token}}"}
+        ],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {"key": "nama_lengkap", "value": "Admin Pengurus Update", "type": "text"},
+            {"key": "role", "value": "pengurus", "type": "text"}
+          ]
+        },
+        "url": {"raw": "{{base_url}}/api/user/1", "host": ["{{base_url}}"], "path": ["api","user","1"]}
+      },
+      "response": []
+    },
+    {
+      "name": "User - Update Password",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {"key": "Accept", "value": "application/json"},
+          {"key": "Authorization", "value": "Bearer {{token}}"},
+          {"key": "Content-Type", "value": "application/json"}
+        ],
+        "body": {"mode": "raw", "raw": "{\n  \"password\": \"newpass123\",\n  \"password_confirmation\": \"newpass123\"\n}"},
+        "url": {"raw": "{{base_url}}/api/user/1/password", "host": ["{{base_url}}"], "path": ["api","user","1","password"]}
+      },
+      "response": []
+    },
+    {
+      "name": "User - Update Profile Photo",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {"key": "Accept", "value": "application/json"},
+          {"key": "Authorization", "value": "Bearer {{token}}"}
+        ],
+        "body": {"mode": "formdata", "formdata": [{"key": "profile_photo", "type": "file", "src": ""}]},
+        "url": {"raw": "{{base_url}}/api/user/1/profile-photo", "host": ["{{base_url}}"], "path": ["api","user","1","profile-photo"]}
+      },
+      "response": []
+    },
+    {
+      "name": "User - Delete",
+      "request": {"method": "DELETE","header": [{"key": "Accept","value": "application/json"},{"key": "Authorization","value": "Bearer {{token}}"}],"url": {"raw": "{{base_url}}/api/user/1","host": ["{{base_url}}"],"path": ["api","user","1"]}},
+      "response": []
+    },
+    {
+      "name": "Activity - List",
+      "request": {"method": "GET","header": [{"key": "Accept","value": "application/json"}],"url": {"raw": "{{base_url}}/api/activity","host": ["{{base_url}}"],"path": ["api","activity"]}},
+      "response": []
+    },
+    {
+      "name": "Activity - Create",
+      "request": {"method": "POST","header": [{"key": "Accept","value": "application/json"},{"key": "Authorization","value": "Bearer {{token}}"}],"body": {"mode": "formdata","formdata": [{"key": "judul","value": "Latihan Mingguan","type": "text"},{"key": "tipe","value": "activity","type": "text"},{"key": "deskripsi","value": "Latihan rutin","type": "text"},{"key": "image","type": "file","src": ""}]},"url": {"raw": "{{base_url}}/api/activity","host": ["{{base_url}}"],"path": ["api","activity"]}},
+      "response": []
+    },
+    {
+      "name": "Activity - Update",
+      "request": {"method": "PUT","header": [{"key": "Accept","value": "application/json"},{"key": "Authorization","value": "Bearer {{token}}"}],"body": {"mode": "formdata","formdata": [{"key": "judul","value": "Latihan Spesial","type": "text"}]},"url": {"raw": "{{base_url}}/api/activity/1","host": ["{{base_url}}"],"path": ["api","activity","1"]}},
+      "response": []
+    },
+    {
+      "name": "Activity - Update Image",
+      "request": {"method": "PATCH","header": [{"key": "Accept","value": "application/json"},{"key": "Authorization","value": "Bearer {{token}}"}],"body": {"mode": "formdata","formdata": [{"key": "image","type": "file","src": ""}]},"url": {"raw": "{{base_url}}/api/activity/1/image","host": ["{{base_url}}"],"path": ["api","activity","1","image"]}},
+      "response": []
+    },
+    {
+      "name": "Activity - Delete",
+      "request": {"method": "DELETE","header": [{"key": "Accept","value": "application/json"},{"key": "Authorization","value": "Bearer {{token}}"}],"url": {"raw": "{{base_url}}/api/activity/1","host": ["{{base_url}}"],"path": ["api","activity","1"]}},
+      "response": []
+    },
+    {
+      "name": "Vismis - List",
+      "request": {"method": "GET","header": [{"key": "Accept","value": "application/json"}],"url": {"raw": "{{base_url}}/api/vismis","host": ["{{base_url}}"],"path": ["api","vismis"]}},
+      "response": []
+    },
+    {
+      "name": "Vismis - Detail",
+      "request": {"method": "GET","header": [{"key": "Accept","value": "application/json"}],"url": {"raw": "{{base_url}}/api/vismis/1","host": ["{{base_url}}"],"path": ["api","vismis","1"]}},
+      "response": []
+    },
+    {
+      "name": "Vismis - Update",
+      "request": {"method": "PUT","header": [{"key": "Accept","value": "application/json"},{"key": "Authorization","value": "Bearer {{token}}"}],"body": {"mode": "formdata","formdata": [{"key": "fill","value": "Menjadi paduan suara unggul","type": "text"}]},"url": {"raw": "{{base_url}}/api/vismis/1","host": ["{{base_url}}"],"path": ["api","vismis","1"]}},
+      "response": []
+    },
+    {
+      "name": "Vismis - Update Image",
+      "request": {"method": "PATCH","header": [{"key": "Accept","value": "application/json"},{"key": "Authorization","value": "Bearer {{token}}"}],"body": {"mode": "formdata","formdata": [{"key": "image","type": "file","src": ""}]},"url": {"raw": "{{base_url}}/api/vismis/1/image","host": ["{{base_url}}"],"path": ["api","vismis","1","image"]}},
+      "response": []
+    }
+  ],
+  "variable": [
+    {"key": "base_url", "value": "http://localhost:8000"},
+    {"key": "token", "value": ""}
+  ]
+}
