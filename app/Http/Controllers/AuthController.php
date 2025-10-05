@@ -24,7 +24,11 @@ class AuthController extends Controller
             if ($user->role !== 'pengurus') {
                 return response()->json(['message' => 'Not authorized'], 403);
             }
-            $token = auth()->login($user);
+            $guard = auth('api');
+            if (!method_exists($guard, 'login')) {
+                return response()->json(['message' => 'JWT guard not configured on server'], 500);
+            }
+            $token = call_user_func([$guard,'login'], $user);
             return $this->respondWithToken($token, $user);
         }
 
@@ -34,20 +38,32 @@ class AuthController extends Controller
     if (!$user || !$user->password || !Hash::check($credentials['password'], $user->password)) {
             return response()->json(['message' => 'Invalid credentials'], 401);
         }
-        $token = auth()->login($user);
+        $guard = auth('api');
+        if (!method_exists($guard, 'login')) {
+            return response()->json(['message' => 'JWT guard not configured on server'], 500);
+        }
+        $token = call_user_func([$guard,'login'], $user);
         return $this->respondWithToken($token, $user);
     }
 
     public function logout()
     {
-        auth()->logout();
+        $guard = auth('api');
+        if (!method_exists($guard, 'logout')) {
+            return response()->json(['message' => 'JWT guard not configured on server'], 500);
+        }
+        call_user_func([$guard,'logout']);
         return response()->json(['message' => 'Logged out']);
     }
 
     public function refresh()
     {
-        $token = auth()->refresh();
-        return $this->respondWithToken($token, auth()->user());
+        $guard = auth('api');
+        if (!method_exists($guard, 'refresh')) {
+            return response()->json(['message' => 'JWT guard not configured on server'], 500);
+        }
+        $token = call_user_func([$guard,'refresh']);
+        return $this->respondWithToken($token, $guard->user());
     }
 
     protected function respondWithToken($token, $user)
