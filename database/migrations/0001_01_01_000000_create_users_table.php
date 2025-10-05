@@ -13,10 +13,23 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('email')->unique();
+            $table->string('nama_lengkap');
+            $table->string('nim')->unique();
+            $table->enum('gender', ['male','female'])->nullable();
+            $table->string('phone_wa')->nullable();
+            $table->string('username_instagram')->nullable();
+            $table->string('fakultas')->nullable();
+            $table->string('prodi')->nullable();
+            $table->string('angkatan')->nullable();
+            $table->text('alasan')->nullable();
+            $table->string('profile_photo')->nullable();
+            $table->enum('range_suara', ['sopran','alto','tenor','bass','belum_ada'])->default('belum_ada');
+            $table->enum('role', ['new_member','anggota','pengurus'])->default('new_member');
+            $table->enum('status', ['aktif','tidak_aktif'])->default('aktif');
+            // credentials for authentication only if pengurus; we still keep standard auth columns for Laravel
+            $table->string('email')->nullable()->unique();
             $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
+            $table->string('password')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });
