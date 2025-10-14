@@ -14,7 +14,8 @@ class UserController extends Controller
     // GET /api/user
     public function index()
     {
-        return response()->json(User::with('pengurus')->paginate(20));
+        // Return all users without pagination; frontend will handle paging/filtering
+        return response()->json(User::with('pengurus')->get());
     }
 
     // GET /api/user/{id}
