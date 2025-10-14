@@ -14,7 +14,7 @@ class UserController extends Controller
     // GET /api/user
     public function index()
     {
-        return response()->json(User::with('pengurus')->paginate(20));
+        return response()->json(User::with('pengurus'));
     }
 
     // GET /api/user/{id}
