@@ -32,8 +32,6 @@ class User extends Authenticatable implements JWTSubject
         'range_suara',
         'role',
         'status',
-        'email',
-        'password',
     ];
 
     /**
@@ -42,22 +40,8 @@ class User extends Authenticatable implements JWTSubject
      * @var list<string>
      */
     protected $hidden = [
-        'password',
         'remember_token',
     ];
-
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
-    protected function casts(): array
-    {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-        ];
-    }
 
     public function pengurus()
     {
