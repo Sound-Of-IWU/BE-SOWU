@@ -3,6 +3,9 @@
         Options -MultiViews -Indexes
     </IfModule>
 
+    # Pass Authorization header (JWT/Bearer Token)
+    SetEnvIf Authorization "(.*)" HTTP_AUTHORIZATION=$1
+
     RewriteEngine On
 
     # Handle Authorization Header

@@ -1,0 +1,23 @@
+<IfModule mod_rewrite.c>
+    <IfModule mod_negotiation.c>
+        Options -MultiViews -Indexes
+    </IfModule>
+
+    RewriteEngine On
+
+    # 1. Pastikan Authorization Header (JWT/Bearer Token) tidak dipotong oleh Apache / cPanel / PHP-FPM
+    SetEnvIf Authorization "(.*)" HTTP_AUTHORIZATION=$1
+    RewriteCond %{HTTP:Authorization} .
+    RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+
+    # 2. Keamanan: Blokir akses ke file sensitif (.env, .git, composer, dsb)
+    RewriteRule ^(\.env|\.git|composer\.(json|lock)|package\.(json|lock)|phpunit\.xml) - [F,L,NC]
+
+    # 3. Keamanan: Blokir akses langsung ke folder sistem Laravel
+    RewriteRule ^(app|bootstrap|config|database|resources|routes|tests|vendor) - [F,L,NC]
+    RewriteRule ^storage/(framework|logs) - [F,L,NC]
+
+    # 4. Arahkan semua request ke folder public/
+    RewriteCond %{REQUEST_URI} !^/public/
+    RewriteRule ^(.*)$ public/$1 [L,QSA]
+</IfModule>
